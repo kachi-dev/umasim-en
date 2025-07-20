@@ -5,6 +5,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
+import io.github.mee1080.umasim.compose.translation.LanguageManager
+
+
 
 @Composable
 fun <T> SelectBox(
@@ -38,10 +41,16 @@ fun <T> SelectBox(
     itemToString: (T) -> String = { it.toString() },
     itemToMenuContent: @Composable (T) -> Unit = { Text(itemToString(it)) },
 ) {
+    // Make the selected item text reactive by using derivedStateOf
+    val currentLanguage by LanguageManager.currentLanguage.collectAsState()
+    val selectedItemText by remember(selectedItem, currentLanguage) {
+        derivedStateOf { selectedItem?.let(itemToString) ?: "" }
+    }
+    
     ExposedDropdownMenuBox(expanded, onExpandedChange, modifier) {
         if (outlined) {
             OutlinedTextField(
-                value = selectedItem?.let(itemToString) ?: "",
+                value = selectedItemText,
                 onValueChange = {},
                 label = label,
                 readOnly = true,
@@ -53,7 +62,7 @@ fun <T> SelectBox(
             )
         } else {
             TextField(
-                value = selectedItem?.let(itemToString) ?: "",
+                value = selectedItemText,
                 onValueChange = {},
                 label = label,
                 readOnly = true,
@@ -78,3 +87,4 @@ fun <T> SelectBox(
         }
     }
 }
+

@@ -16,11 +16,12 @@ import io.github.mee1080.umasim.race.data.SkillActivateAdjustment
 import io.github.mee1080.umasim.store.AppState
 import io.github.mee1080.umasim.store.framework.OperationDispatcher
 import io.github.mee1080.umasim.store.operation.*
+import io.github.mee1080.umasim.compose.translation.LanguageManager
 
 @Composable
 fun SettingInput(state: AppState, dispatch: OperationDispatcher<AppState>) {
     HideBlock(
-        header = { Text("その他設定") },
+        header = { Text(LanguageManager.getText("その他設定")) },
         initialOpen = true,
     ) {
         OtherSetting(state, dispatch)
@@ -40,27 +41,27 @@ private fun OtherSetting(state: AppState, dispatch: OperationDispatcher<AppState
             IntTextField(
                 value = state.simulationCount,
                 modifier = Modifier.width(128.dp),
-                label = { Text("回数") },
+                label = { Text(LanguageManager.getText("回数")) },
                 onValueChange = { dispatch(setSimulationCount(it)) }
             )
             SelectBox(
                 SkillActivateAdjustment.entries, setting.skillActivateAdjustment,
                 onSelect = { dispatch(setSkillActivateAdjustment(it)) },
                 modifier = Modifier.width(256.dp),
-                label = { Text("スキル発動率修正") },
+                label = { Text(LanguageManager.getText("スキル発動率修正")) },
                 itemToString = { it.label },
             )
             SelectBox(
                 RandomPosition.entries, setting.randomPosition,
                 onSelect = { dispatch(setRandomPosition(it)) },
                 modifier = Modifier.width(256.dp),
-                label = { Text("ランダム区間") },
+                label = { Text(LanguageManager.getText("ランダム区間")) },
                 itemToString = { it.label },
             )
         }
         Column {
             val intValue = (state.systemSetting.skillLaneChangeRate * 100).toInt()
-            Text("速度スキル発動時レーン移動率： $intValue %")
+            Text("${LanguageManager.getText("速度スキル発動時レーン移動率")}： $intValue %")
             Slider(
                 value = intValue.toFloat(),
                 onValueChange = { dispatch(setSkillLaneChangeRate(it / 100.0)) },

@@ -16,6 +16,7 @@ import io.github.mee1080.umasim.store.framework.OperationDispatcher
 import io.github.mee1080.umasim.store.operation.runSimulation
 import io.github.mee1080.umasim.store.operation.setThreadCount
 import io.github.mee1080.utility.toPercentString
+import io.github.mee1080.umasim.compose.translation.LanguageManager
 
 @Composable
 fun ActionInput(state: AppState, dispatch: OperationDispatcher<AppState>) {
@@ -27,7 +28,7 @@ fun ActionInput(state: AppState, dispatch: OperationDispatcher<AppState>) {
                 IntTextField(
                     value = state.threadCount,
                     modifier = Modifier.width(128.dp),
-                    label = { Text("スレッド数") },
+                    label = { Text(LanguageManager.getText("スレッド数")) },
                     onValueChange = { dispatch(setThreadCount(it)) }
                 )
             }
@@ -39,14 +40,14 @@ fun ActionInput(state: AppState, dispatch: OperationDispatcher<AppState>) {
                 onClick = { dispatch(runSimulation()) },
                 enabled = state.simulationCount > 0 && state.simulationProgress == 0,
             ) {
-                Text("エミュレート開始")
+                Text(LanguageManager.getText("エミュレート開始"))
             }
             if (state.simulationMode == SimulationMode.NORMAL) {
                 MyButton(
                     onClick = { dispatch(runSimulation(1)) },
                     enabled = state.simulationProgress == 0,
                 ) {
-                    Text("1回のみ")
+                    Text(LanguageManager.getText("1回のみ"))
                 }
             }
         }

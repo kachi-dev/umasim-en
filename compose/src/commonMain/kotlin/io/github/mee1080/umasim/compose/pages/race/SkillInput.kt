@@ -23,16 +23,17 @@ import io.github.mee1080.umasim.store.AppState
 import io.github.mee1080.umasim.store.framework.OperationDispatcher
 import io.github.mee1080.umasim.store.operation.*
 import io.github.mee1080.utility.applyIf
+import io.github.mee1080.umasim.compose.translation.LanguageManager
 
 
 @Composable
 fun SkillInput(virtual: Boolean, state: AppState, dispatch: OperationDispatcher<AppState>) {
     val hasSkills by derivedStateOf { state.hasSkills(virtual) }
     HideBlock(
-        header = { Text("スキル") },
+        header = { Text(LanguageManager.getText("スキル")) },
         initialOpen = true,
         headerClosed = {
-            Text("スキル：${hasSkills.joinToString(", ") { it.name }}")
+            Text("${LanguageManager.getText("スキル")}：${hasSkills.joinToString(", ") { it.name }}")
         },
     ) {
         SkillSetting(virtual, state, dispatch)
@@ -49,7 +50,7 @@ private fun SkillSetting(virtual: Boolean, state: AppState, dispatch: OperationD
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        MyButton({ dispatch(clearSkill(virtual)) }) { Text("すべてのスキルを削除") }
+        MyButton({ dispatch(clearSkill(virtual)) }) { Text(LanguageManager.getText("すべてのスキルを削除")) }
         UniqueSkillSetting(virtual, chara.charaName, chara.uniqueLevel, skillIdSet, dispatch)
         SkillFilter(filter) { filter = it }
         FlowRow(
@@ -57,14 +58,14 @@ private fun SkillSetting(virtual: Boolean, state: AppState, dispatch: OperationD
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             LabeledCheckbox(state.skillCategoryView, { dispatch(setSkillCategoryView(it)) }) {
-                Text("カテゴリ表示")
+                Text(LanguageManager.getText("カテゴリ表示"))
             }
             LabeledCheckbox(
                 selected = state.skillDisplayMinus,
                 onCheckedChange = { dispatch(setSkillDisplayMinus(it)) },
                 enabled = !state.skillCategoryView,
             ) {
-                Text("マイナススキル表示")
+                Text(LanguageManager.getText("マイナススキル表示"))
             }
         }
         if (filter.isNotEmpty()) {
@@ -77,27 +78,27 @@ private fun SkillSetting(virtual: Boolean, state: AppState, dispatch: OperationD
         } else {
             val passiveSkills = groupedSkills["passive"]
             if (passiveSkills != null) {
-                TypeSkillSetting(virtual, "パッシブ", passiveSkills, skillIdSet, setting, dispatch)
+                TypeSkillSetting(virtual, LanguageManager.getText("パッシブ"), passiveSkills, skillIdSet, setting, dispatch)
             }
             val healSkills = groupedSkills["heal"]
             if (healSkills != null) {
-                TypeSkillSetting(virtual, "回復", healSkills, skillIdSet, setting, dispatch)
+                TypeSkillSetting(virtual, LanguageManager.getText("回復"), healSkills, skillIdSet, setting, dispatch)
             }
             val speedSkills = groupedSkills["speed"]
             if (speedSkills != null) {
-                TypeSkillSetting(virtual, "速度", speedSkills, skillIdSet, setting, dispatch)
+                TypeSkillSetting(virtual, LanguageManager.getText("速度"), speedSkills, skillIdSet, setting, dispatch)
             }
             val accelerationSkills = groupedSkills["acceleration"]
             if (accelerationSkills != null) {
-                TypeSkillSetting(virtual, "加速", accelerationSkills, skillIdSet, setting, dispatch)
+                TypeSkillSetting(virtual, LanguageManager.getText("加速"), accelerationSkills, skillIdSet, setting, dispatch)
             }
             val multiSkill = groupedSkills["multi"]
             if (multiSkill != null) {
-                TypeSkillSetting(virtual, "複合", multiSkill, skillIdSet, setting, dispatch)
+                TypeSkillSetting(virtual, LanguageManager.getText("複合"), multiSkill, skillIdSet, setting, dispatch)
             }
             val gateSkills = groupedSkills["other"]
             if (gateSkills != null) {
-                TypeSkillSetting(virtual, "その他", gateSkills, skillIdSet, setting, dispatch)
+                TypeSkillSetting(virtual, LanguageManager.getText("その他"), gateSkills, skillIdSet, setting, dispatch)
             }
         }
     }
@@ -116,18 +117,18 @@ private fun SkillFilter(
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text("フィルタ：")
+        Text("${LanguageManager.getText("フィルタ")}：")
         OutlinedTextField(
             value = inputValue,
             onValueChange = { inputValue = it },
             modifier = Modifier.width(256.dp),
         )
         MyButton({ onChange(inputValue) }) {
-            Text("反映")
+            Text(LanguageManager.getText("反映"))
         }
         if (value.isNotEmpty()) {
             MyButton({ onChange("") }) {
-                Text("クリア")
+                Text(LanguageManager.getText("クリア"))
             }
         }
     }
@@ -145,7 +146,7 @@ private fun SkillChip(virtual: Boolean, skill: SkillData, selected: Boolean, dis
     WithTooltip(
         tooltip = {
             Column {
-                skill.messages.forEach { Text(it) }
+                skill.messages.forEach { Text(LanguageManager.getText(it)) }
             }
         },
     ) {
@@ -163,7 +164,7 @@ private fun SkillChip(virtual: Boolean, skill: SkillData, selected: Boolean, dis
         FilterChip(
             selected = selected,
             onClick = { dispatch(toggleSkill(virtual, skill)) },
-            label = { Text(skill.name) },
+            label = { Text(LanguageManager.getText(skill.name)) },
             leadingIcon = { if (selected) Icon(Icons.Default.Check, "Selected") },
             colors = colors,
             border = border,
@@ -195,7 +196,7 @@ private fun UniqueSkillSetting(
     dispatch: OperationDispatcher<AppState>,
 ) {
     HideBlock(
-        header = { Text("固有/進化") },
+        header = { Text(LanguageManager.getText("固有/進化")) },
         initialOpen = true,
         headerBackground = MaterialTheme.colorScheme.tertiaryContainer,
     ) {
@@ -206,7 +207,7 @@ private fun UniqueSkillSetting(
                 charaList, charaName,
                 onSelect = { dispatch(setCharaName(virtual, it)) },
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("キャラ") },
+                label = { Text(LanguageManager.getText("キャラ")) },
             )
             if (charaName != NOT_SELECTED) {
                 val uniqueSkill = charaToUniqueSkill[charaName]
@@ -264,27 +265,27 @@ private fun TypeSkillSetting(
         ) {
             val inheritSkills = skills["inherit"]?.filterBySetting(virtual, setting, skillIdSet)
             if (!inheritSkills.isNullOrEmpty()) {
-                SkillFlowRow(virtual, "継承", inheritSkills, skillIdSet, dispatch)
+                SkillFlowRow(virtual, LanguageManager.getText("継承"), inheritSkills, skillIdSet, dispatch)
             }
             val scenarioSkills = skills["scenario"]?.filterBySetting(virtual, setting, skillIdSet)
             if (!scenarioSkills.isNullOrEmpty()) {
-                SkillFlowRow(virtual, "シナリオ進化", scenarioSkills, skillIdSet, dispatch)
+                SkillFlowRow(virtual, LanguageManager.getText("シナリオ進化"), scenarioSkills, skillIdSet, dispatch)
             }
             val rareSkills = skills["rare"]?.filterBySetting(virtual, setting, skillIdSet)
             if (!rareSkills.isNullOrEmpty()) {
-                SkillFlowRow(virtual, "レア", rareSkills, skillIdSet, dispatch)
+                SkillFlowRow(virtual, LanguageManager.getText("レア"), rareSkills, skillIdSet, dispatch)
             }
             val normalSkills = skills["normal"]?.filterBySetting(virtual, setting, skillIdSet)
             if (!normalSkills.isNullOrEmpty()) {
-                SkillFlowRow(virtual, "通常", normalSkills, skillIdSet, dispatch)
+                SkillFlowRow(virtual, LanguageManager.getText("通常"), normalSkills, skillIdSet, dispatch)
             }
             val specialSkills = skills["special"]?.filterBySetting(virtual, setting, skillIdSet)
             if (!specialSkills.isNullOrEmpty()) {
-                SkillFlowRow(virtual, "特殊", specialSkills, skillIdSet, dispatch)
+                SkillFlowRow(virtual, LanguageManager.getText("特殊"), specialSkills, skillIdSet, dispatch)
             }
             val minusSkills = skills["minus"]?.filterBySetting(virtual, setting, skillIdSet)
             if (!minusSkills.isNullOrEmpty()) {
-                SkillFlowRow(virtual, "マイナス", minusSkills, skillIdSet, dispatch)
+                SkillFlowRow(virtual, LanguageManager.getText("マイナス"), minusSkills, skillIdSet, dispatch)
             }
         }
     }

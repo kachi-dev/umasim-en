@@ -12,6 +12,7 @@ import io.github.mee1080.umasim.store.SimulationMode
 import io.github.mee1080.umasim.store.framework.OperationDispatcher
 import io.github.mee1080.umasim.store.operation.setContributionTarget
 import io.github.mee1080.umasim.store.operation.setSimulationMode
+import io.github.mee1080.umasim.compose.translation.LanguageManager
 
 @Composable
 fun ModeInput(state: AppState, dispatch: OperationDispatcher<AppState>) {
@@ -21,8 +22,8 @@ fun ModeInput(state: AppState, dispatch: OperationDispatcher<AppState>) {
         SelectBox(
             SimulationMode.entries, state.simulationMode,
             onSelect = { dispatch(setSimulationMode(it)) },
-            label = { Text("モード") },
-            itemToString = { it.label },
+            label = { Text(LanguageManager.getText("モード")) },
+            itemToString = { LanguageManager.getTextSync(it.label) },
         )
         if (state.simulationMode == SimulationMode.CONTRIBUTION || state.simulationMode == SimulationMode.CONTRIBUTION2) {
             ContributionSetting(state, dispatch)
@@ -39,7 +40,7 @@ private fun ContributionSetting(state: AppState, dispatch: OperationDispatcher<A
                 selected = state.contributionTargets.contains(id),
                 onCheckedChange = { dispatch(setContributionTarget(id, it)) },
             ) {
-                Text(skill.name)
+                Text(LanguageManager.getText(skill.name))
             }
         }
     }

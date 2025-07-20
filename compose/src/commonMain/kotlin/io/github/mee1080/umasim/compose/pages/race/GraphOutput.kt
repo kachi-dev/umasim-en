@@ -1,6 +1,7 @@
 package io.github.mee1080.umasim.compose.pages.race
 
 import androidx.compose.foundation.border
+import io.github.mee1080.umasim.compose.translation.LanguageManager
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -52,10 +53,10 @@ private val virtualLegends = defaultLegends + listOf(
 private fun GraphArea(graphData: GraphData) {
     val frameList = graphData.frameList
     Column {
-        Text("直近レース詳細", style = MaterialTheme.typography.headlineSmall)
+        Text(LanguageManager.getText("直近レース詳細"), style = MaterialTheme.typography.headlineSmall)
         var verticalZoom by remember { mutableStateOf(false) }
         LabeledCheckbox(verticalZoom, { verticalZoom = it }) {
-            Text("スキル数に応じて縦方向に拡大")
+            Text(LanguageManager.getText("スキル数に応じて縦方向に拡大"))
         }
         val height by derivedStateOf { if (verticalZoom) max(520, graphData.skillData.size * 34) else 520 }
         ChartLayout(
@@ -65,7 +66,7 @@ private fun GraphArea(graphData: GraphData) {
                 FlowLegend(
                     itemCount = legends.size,
                     symbol = { Symbol(shape = RectangleShape, fillBrush = SolidColor(legends[it].second)) },
-                    label = { Text(legends[it].first) },
+                    label = { Text(LanguageManager.getText(legends[it].first)) },
                     modifier = Modifier.border(1.dp, Color.Black).padding(8.dp)
                 )
             },
@@ -124,12 +125,12 @@ private fun GraphArea(graphData: GraphData) {
                 )
                 XYAnnotation(Point(0f, 0.05f), AnchorPoint.LeftMiddle) {
                     TooltipSurface(containerColor = Color(0, 0, 0, 128)) {
-                        Text("直線(青)/コーナー(紫)")
+                        Text(LanguageManager.getText("直線(青)/コーナー(紫)"))
                     }
                 }
                 XYAnnotation(Point(0f, 0.15f), AnchorPoint.LeftMiddle) {
                     TooltipSurface(containerColor = Color(0, 0, 0, 128)) {
-                        Text("上り坂(緑)/下り坂(黄)")
+                        Text(LanguageManager.getText("上り坂(緑)/下り坂(黄)"))
                     }
                 }
                 if (graphData.skillData.isNotEmpty()) {
@@ -139,16 +140,16 @@ private fun GraphArea(graphData: GraphData) {
                         XYAnnotation(Point(skill.start, top), AnchorPoint.TopLeft) {
                             if (skill.description.isEmpty()) {
                                 TooltipSurface(containerColor = Color(0, 0, 0, 128)) {
-                                    Text(skill.name)
+                                    Text(LanguageManager.getText(skill.name))
                                 }
                             } else {
                                 WithTooltip(
                                     tooltip = {
-                                        Text(skill.description)
+                                        Text(LanguageManager.getText(skill.description))
                                     }
                                 ) {
                                     TooltipSurface(containerColor = Color(0, 0, 0, 128)) {
-                                        Text(skill.name)
+                                        Text(LanguageManager.getText(skill.name))
                                     }
                                 }
                             }

@@ -22,13 +22,14 @@ import io.github.mee1080.utility.roundToString
 import io.github.mee1080.utility.secondToTimeString
 import io.github.mee1080.utility.toPercentString
 import kotlin.math.roundToInt
+import io.github.mee1080.umasim.compose.translation.LanguageManager
 
 @Composable
 fun SummaryOutput(state: AppState) {
     val summary = state.simulationSummary ?: return
     Column {
-        Text("結果", style = MaterialTheme.typography.headlineSmall)
-        Text("最大スパート率：${summary.spurtRate.toPercentString(2)}")
+        Text(LanguageManager.getText("結果"), style = MaterialTheme.typography.headlineSmall)
+        Text("${LanguageManager.getText("最大スパート率")}：${summary.spurtRate.toPercentString(2)}")
         SummaryTable(summary)
         SkillTable(summary)
     }
@@ -53,11 +54,12 @@ private val tableHeader = listOf(
 private fun SummaryTable(summary: SimulationSummary) {
     Column {
         val scrollState = rememberScrollState()
+        val translatedHeader = tableHeader.map { LanguageManager.getText(it) }
         val tableData = buildList {
-            add(tableHeader)
-            add(toTableData("全体", summary.allSummary))
-            add(toTableData("最大スパート", summary.spurtSummary))
-            add(toTableData("非最大スパート", summary.notSpurtSummary))
+            add(translatedHeader)
+            add(toTableData(LanguageManager.getText("全体"), summary.allSummary))
+            add(toTableData(LanguageManager.getText("最大スパート"), summary.spurtSummary))
+            add(toTableData(LanguageManager.getText("非最大スパート"), summary.notSpurtSummary))
         }
         LinedTable(
             rowCount = 4, columnCount = tableHeader.size,
@@ -123,16 +125,16 @@ private fun SkillTable(summary: SimulationSummary) {
                 "終盤発動率",
                 "平均終盤遅延",
                 "速度上昇無効割合",
-            )
+            ).map { LanguageManager.getText(it) }
         )
         summaries.forEach { add(toTableData(summary.setting, it.second)) }
     }
-    Text("スキル情報", modifier = Modifier.padding(top = 8.dp))
+    Text(LanguageManager.getText("スキル情報"), modifier = Modifier.padding(top = 8.dp))
     Row {
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text("", Modifier.padding(4.dp))
             summaries.forEach {
-                Text(it.first, Modifier.padding(4.dp))
+                Text(LanguageManager.getText(it.first), Modifier.padding(4.dp))
             }
         }
         Table(tableData.size, 14, scrollable = true) { row, col ->
