@@ -75,9 +75,9 @@ private suspend fun ActionContext<AppState>.runSimulationNormal(state: AppState,
     val notSpurtResult = results.filter { !it.maxSpurt }
     val summary = SimulationSummary(
         setting = state.setting,
-        allSummary = toSummary(results),
-        spurtSummary = toSummary(spurtResults),
-        notSpurtSummary = toSummary(notSpurtResult),
+        allSummary = toSummary(results, state.setting.courseLength),
+        spurtSummary = toSummary(spurtResults, state.setting.courseLength),
+        notSpurtSummary = toSummary(notSpurtResult, state.setting.courseLength),
         spurtRate = spurtResults.size.toDouble() / results.size,
         staminaSurvivalRate = results.count { it.staminaSurvival } / results.size.toDouble(),
         skillSummaries = skillSummaries.map { it.key to toSummary(it.value) },
@@ -92,22 +92,35 @@ private suspend fun ActionContext<AppState>.runSimulationNormal(state: AppState,
     }
 }
 
-private fun toSummary(result: List<RaceSimulationResult>): SimulationSummaryEntry {
-    return if (result.isEmpty()) SimulationSummaryEntry() else SimulationSummaryEntry(
-        count = result.size,
-        averageTime = result.averageOf { it.raceTime },
-        bestTime = result.minOf { it.raceTime },
-        worstTime = result.maxOf { it.raceTime },
-        averageSp = result.averageOf { it.spDiff },
-        bestSp = result.maxOf { it.spDiff },
-        worstSp = result.minOf { it.spDiff },
-        positionCompetitionCount = result.averageOf { it.positionCompetitionCount.toDouble() },
-        staminaKeepRate = result.count { it.staminaKeepDistance > 0.0 } / result.size.toDouble(),
-        staminaKeepDistance = result.averageOf { it.staminaKeepDistance },
-        competeFightFinishRate = result.count { it.competeFightFinished } /
-                result.count { it.competeFightTime > 0.0 }.toDouble(),
-        competeFightTime = result.averageOf { it.competeFightTime },
-    )
+private fun toSummary(result: List<RaceSimulationResult>, courseLength: Int): SimulationSummaryEntry {
+    return if (result.isEmpty()) SimulationSummaryEntry() else {
+        val staminaDepletionResults = result.filter { !it.staminaSurvival }
+        val staminaDepletionDistancesFromEnd = staminaDepletionResults.mapNotNull { result ->
+            result.staminaDepletionPosition?.let { position ->
+                courseLength.toDouble() - position
+            }
+        }
+        
+        SimulationSummaryEntry(
+            count = result.size,
+            averageTime = result.averageOf { it.raceTime },
+            bestTime = result.minOf { it.raceTime },
+            worstTime = result.maxOf { it.raceTime },
+            averageSp = result.averageOf { it.spDiff },
+            bestSp = result.maxOf { it.spDiff },
+            worstSp = result.minOf { it.spDiff },
+            positionCompetitionCount = result.averageOf { it.positionCompetitionCount.toDouble() },
+            staminaKeepRate = result.count { it.staminaKeepDistance > 0.0 } / result.size.toDouble(),
+            staminaKeepDistance = result.averageOf { it.staminaKeepDistance },
+            competeFightFinishRate = result.count { it.competeFightFinished } /
+                    result.count { it.competeFightTime > 0.0 }.toDouble(),
+            competeFightTime = result.averageOf { it.competeFightTime },
+            staminaDepletionCount = staminaDepletionResults.size,
+            averageStaminaDepletionDistanceFromEnd = if (staminaDepletionDistancesFromEnd.isNotEmpty()) staminaDepletionDistancesFromEnd.average() else 0.0,
+            longestStaminaDepletionDistanceFromEnd = staminaDepletionDistancesFromEnd.maxOrNull() ?: 0.0,
+            shortestStaminaDepletionDistanceFromEnd = staminaDepletionDistancesFromEnd.minOrNull() ?: 0.0,
+        )
+    }
 }
 
 private class SimulationSkillInfoWork(

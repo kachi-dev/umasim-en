@@ -433,6 +433,13 @@ object Translations {
         
         // Additional terms
         "人" to "runners",
+        
+        // Stamina survival table
+        "スタミナ切れ統計" to "Stamina Depletion Statistics",
+        "スタミナ切れ数" to "Stamina Depletion Count",
+        "平均スタミナ切れ距離(ゴール前)" to "Average Distance from Goal",
+        "最長スタミナ切れ距離(ゴール前)" to "Max Distance from Goal",
+        "最短スタミナ切れ距離(ゴール前)" to "Min Distance from Goal",
     )
     
     fun translate(japaneseText: String): String {

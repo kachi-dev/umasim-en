@@ -105,6 +105,10 @@ data class SimulationSummaryEntry(
     val staminaKeepDistance: Double = 0.0,
     val competeFightFinishRate: Double = 0.0,
     val competeFightTime: Double = 0.0,
+    val staminaDepletionCount: Int = 0,
+    val averageStaminaDepletionDistanceFromEnd: Double = 0.0,
+    val longestStaminaDepletionDistanceFromEnd: Double = 0.0,
+    val shortestStaminaDepletionDistanceFromEnd: Double = 0.0,
 )
 
 data class SimulationSkillInfo(

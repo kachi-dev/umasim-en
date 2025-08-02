@@ -30,9 +30,11 @@ fun SummaryOutput(state: AppState) {
     Column {
         Text(LanguageManager.getText("結果"), style = MaterialTheme.typography.headlineSmall)
         Text("${LanguageManager.getText("最大スパート率")}：${summary.spurtRate.toPercentString(2)}")
+        SummaryTable(summary)
+        Spacer(modifier = Modifier.height(8.dp))
         Text("${LanguageManager.getText("スタミナ生存率")}：${summary.staminaSurvivalRate.toPercentString(2)}")
         Text(LanguageManager.getText("最大スパートでも最後の60mでスタミナ切れで死亡する可能性があります"), style = MaterialTheme.typography.bodySmall)
-        SummaryTable(summary)
+        StaminaSurvivalTable(summary)
         SkillTable(summary)
     }
 }
@@ -85,6 +87,47 @@ private fun SummaryTable(summary: SimulationSummary) {
     }
 }
 
+private val staminaSurvivalTableHeader = listOf(
+    "",
+    "スタミナ切れ数",
+    "平均スタミナ切れ距離(ゴール前)",
+    "最長スタミナ切れ距離(ゴール前)",
+    "最短スタミナ切れ距離(ゴール前)",
+)
+
+@Composable
+private fun StaminaSurvivalTable(summary: SimulationSummary) {
+    Column {
+        val scrollState = rememberScrollState()
+        val translatedHeader = staminaSurvivalTableHeader.map { LanguageManager.getText(it) }
+        val tableData = buildList {
+            add(translatedHeader)
+            add(toStaminaSurvivalTableData(LanguageManager.getText("全体"), summary.allSummary))
+            add(toStaminaSurvivalTableData(LanguageManager.getText("最大スパート"), summary.spurtSummary))
+            add(toStaminaSurvivalTableData(LanguageManager.getText("非最大スパート"), summary.notSpurtSummary))
+        }
+        LinedTable(
+            rowCount = 4, columnCount = staminaSurvivalTableHeader.size,
+            modifier = Modifier.fillMaxWidth().horizontalScroll(scrollState),
+            cellBackground = MaterialTheme.colorScheme.surface,
+            cellPadding = 4.dp,
+        ) { row, column ->
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = when {
+                    row == 0 -> Alignment.CenterHorizontally
+                    column == 0 -> Alignment.Start
+                    else -> Alignment.End
+                },
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(tableData[row][column])
+            }
+        }
+        HorizontalScrollbar(rememberScrollbarAdapter(scrollState), Modifier.fillMaxWidth())
+    }
+}
+
 private fun toTableData(label: String, entry: SimulationSummaryEntry): List<String> {
     return if (entry.count == 0) {
         listOf(label, "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-")
@@ -102,6 +145,20 @@ private fun toTableData(label: String, entry: SimulationSummaryEntry): List<Stri
             entry.staminaKeepDistance.roundToString(1),
             entry.competeFightFinishRate.toPercentString(1),
             entry.competeFightTime.roundToString(1),
+        )
+    }
+}
+
+private fun toStaminaSurvivalTableData(label: String, entry: SimulationSummaryEntry): List<String> {
+    return if (entry.count == 0 || entry.staminaDepletionCount == 0) {
+        listOf(label, "-", "-", "-", "-")
+    } else {
+        listOf(
+            label,
+            entry.staminaDepletionCount.toString(),
+            entry.averageStaminaDepletionDistanceFromEnd.roundToString(1),
+            entry.longestStaminaDepletionDistanceFromEnd.roundToString(1),
+            entry.shortestStaminaDepletionDistanceFromEnd.roundToString(1),
         )
     }
 }
