@@ -772,7 +772,10 @@ class RaceSimulationState(
     var positionKeepNextFrame: Int = framePerSecond * 2,
     var positionKeepExitPosition: Double = 0.0,
     var positionKeepExitDistance: Double = 0.0,
-
+    // New fields for stamina depletion tracking
+    var staminaDepletionFrame: Int? = null,
+    var staminaDepletionPosition: Double? = null,
+    var staminaDepletionTime: Double? = null,
     val frames: MutableList<RaceFrame> = mutableListOf(),
 ) {
     val isInTemptation: Boolean
@@ -862,6 +865,10 @@ data class RaceSimulationResult(
     val staminaKeepDistance: Double,
     val competeFightFinished: Boolean,
     val competeFightTime: Double,
+    // New fields for stamina survival tracking
+    val staminaSurvival: Boolean,
+    val staminaDepletionPosition: Double?,
+    val staminaDepletionTime: Double?,
 )
 
 class InvokedSkill(

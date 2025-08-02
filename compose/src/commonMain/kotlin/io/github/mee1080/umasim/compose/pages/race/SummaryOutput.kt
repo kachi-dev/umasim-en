@@ -30,6 +30,8 @@ fun SummaryOutput(state: AppState) {
     Column {
         Text(LanguageManager.getText("結果"), style = MaterialTheme.typography.headlineSmall)
         Text("${LanguageManager.getText("最大スパート率")}：${summary.spurtRate.toPercentString(2)}")
+        Text("${LanguageManager.getText("スタミナ生存率")}：${summary.staminaSurvivalRate.toPercentString(2)}")
+        Text(LanguageManager.getText("最大スパートでも最後の60mでスタミナ切れで死亡する可能性があります"), style = MaterialTheme.typography.bodySmall)
         SummaryTable(summary)
         SkillTable(summary)
     }

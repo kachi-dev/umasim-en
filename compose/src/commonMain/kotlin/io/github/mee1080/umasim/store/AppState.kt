@@ -88,6 +88,7 @@ data class SimulationSummary(
     val spurtSummary: SimulationSummaryEntry,
     val notSpurtSummary: SimulationSummaryEntry,
     val spurtRate: Double,
+    val staminaSurvivalRate: Double,
     val skillSummaries: List<Pair<String, SimulationSkillSummary>>,
 )
 

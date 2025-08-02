@@ -251,6 +251,7 @@ private fun RaceState.updateFrame(): Boolean {
     }
 
     // 追い比べ
+    /* Disabled for Global
     if (simulation.competeFight) {
         // HP5%以下で終了
         if (simulation.sp <= 0.05 * setting.spMax) {
@@ -264,6 +265,7 @@ private fun RaceState.updateFrame(): Boolean {
             simulation.competeFightStart = simulation.frameElapsed
         }
     }
+    */
 
     if (currentSection in 11..15) {
         // 位置取り調整/持久力温存
@@ -387,6 +389,13 @@ private fun RaceState.move(elapsedTime: Double) {
         simulation.position += moveLength - cornerLoss
         simulation.sp -= calcConsumePerSecond() * elapsedTime
 
+        // Track stamina depletion
+        if (simulation.sp <= 0 && simulation.staminaDepletionFrame == null) {
+            simulation.staminaDepletionFrame = simulation.frameElapsed
+            simulation.staminaDepletionPosition = simulation.position
+            simulation.staminaDepletionTime = simulation.frameElapsed * secondPerFrame
+        }
+
         this.updateStartDash()
     }
 }
@@ -503,6 +512,10 @@ private fun RaceState.goal(): RaceSimulationResult {
         staminaKeepDistance = simulation.staminaKeepDistance,
         competeFightFinished = simulation.competeFightEnd == null && simulation.competeFightStart != null,
         competeFightTime = competeFightFrame * secondPerFrame,
+        // New stamina survival tracking
+        staminaSurvival = simulation.staminaDepletionFrame == null,
+        staminaDepletionPosition = simulation.staminaDepletionPosition,
+        staminaDepletionTime = simulation.staminaDepletionTime,
     )
 }
 

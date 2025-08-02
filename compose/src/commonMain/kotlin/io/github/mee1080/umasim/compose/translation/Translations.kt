@@ -17,6 +17,8 @@ object Translations {
         "マイル" to "Mile",
         "中距離" to "Medium",
         "長距離" to "Long",
+        "スタミナ生存率" to "Stamina Survival Rate",
+        "最大スパートでも最後の60mでスタミナ切れで死亡する可能性があります" to "Even with a full spurt, your uma can still run out of stamina and die in the last 60m",
 
         // Status
         "スピード" to "Speed",
@@ -112,9 +114,6 @@ object Translations {
         "平均タイム" to "Avg. Time",
         "最速タイム" to "Fastest Time",
         "最遅タイム" to "Slowest Time",
-        "平均余剰耐力" to "Avg. Surplus Stamina",
-        "最大余剰耐力" to "Max Surplus Stamina",
-        "最小余剰耐力" to "Min Surplus Stamina",
         "位置取り調整回数" to "Position Adjustment Count",
         "持久力温存発生率" to "Stamina Saving Rate",
         "持久力温存平均距離" to "Avg. Stamina Saving Distance",
@@ -239,9 +238,9 @@ object Translations {
         // Race emulation results
         "補正後ステータス" to "Adjusted Status",
         "初期耐力" to "Initial Stamina",
-        "金回復≒" to "Gold Recovery ≈",
+        "金回復≒" to "Gold Recovery: ~",
         "スタミナ" to "Stamina",
-        "白回復≒" to "White Recovery ≈",
+        "白回復≒" to "White Recovery: ~",
         "終盤耐力消耗係数" to "Late Game Stamina Consumption Coefficient",
         "スキル発動率" to "Skill Activation Rate",
         "掛かり率" to "Temptation Rate",
@@ -289,7 +288,6 @@ object Translations {
         "追い比べ　加速度" to "Competition Acceleration",
         "耐力" to "Stamina",
         "結果" to "Result",
-        "最大スパート率" to "Max Spurt Rate",
         "全体" to "Overall",
         "最大スパート" to "Max Spurt",
         "非最大スパート" to "Non-Max Spurt",

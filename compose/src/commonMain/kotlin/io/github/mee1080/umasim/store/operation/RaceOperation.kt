@@ -79,6 +79,7 @@ private suspend fun ActionContext<AppState>.runSimulationNormal(state: AppState,
         spurtSummary = toSummary(spurtResults),
         notSpurtSummary = toSummary(notSpurtResult),
         spurtRate = spurtResults.size.toDouble() / results.size,
+        staminaSurvivalRate = results.count { it.staminaSurvival } / results.size.toDouble(),
         skillSummaries = skillSummaries.map { it.key to toSummary(it.value) },
     )
     emit {
