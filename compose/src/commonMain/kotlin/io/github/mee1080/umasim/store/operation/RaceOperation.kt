@@ -97,7 +97,8 @@ private fun toSummary(result: List<RaceSimulationResult>, courseLength: Int): Si
         val staminaDepletionResults = result.filter { !it.staminaSurvival }
         val staminaDepletionDistancesFromEnd = staminaDepletionResults.mapNotNull { result ->
             result.staminaDepletionPosition?.let { position ->
-                courseLength.toDouble() - position
+                val distanceFromEnd = courseLength.toDouble() - position
+                if (distanceFromEnd > 0.0) distanceFromEnd else null
             }
         }
         
@@ -115,7 +116,7 @@ private fun toSummary(result: List<RaceSimulationResult>, courseLength: Int): Si
             competeFightFinishRate = result.count { it.competeFightFinished } /
                     result.count { it.competeFightTime > 0.0 }.toDouble(),
             competeFightTime = result.averageOf { it.competeFightTime },
-            staminaDepletionCount = staminaDepletionResults.size,
+            staminaDepletionCount = staminaDepletionDistancesFromEnd.size,
             averageStaminaDepletionDistanceFromEnd = if (staminaDepletionDistancesFromEnd.isNotEmpty()) staminaDepletionDistancesFromEnd.average() else 0.0,
             longestStaminaDepletionDistanceFromEnd = staminaDepletionDistancesFromEnd.maxOrNull() ?: 0.0,
             shortestStaminaDepletionDistanceFromEnd = staminaDepletionDistancesFromEnd.minOrNull() ?: 0.0,
