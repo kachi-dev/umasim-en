@@ -391,9 +391,12 @@ private fun RaceState.move(elapsedTime: Double) {
 
         // Track stamina depletion
         if (simulation.sp <= 0 && simulation.staminaDepletionFrame == null) {
-            simulation.staminaDepletionFrame = simulation.frameElapsed
-            simulation.staminaDepletionPosition = simulation.position
-            simulation.staminaDepletionTime = simulation.frameElapsed * secondPerFrame
+            val distanceFromEnd = setting.courseLength - simulation.position
+            if (distanceFromEnd > 0.0) {
+                simulation.staminaDepletionFrame = simulation.frameElapsed
+                simulation.staminaDepletionPosition = simulation.position
+                simulation.staminaDepletionTime = simulation.frameElapsed * secondPerFrame
+            }
         }
 
         this.updateStartDash()
