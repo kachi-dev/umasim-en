@@ -776,6 +776,7 @@ class RaceSimulationState(
     var staminaDepletionFrame: Int? = null,
     var staminaDepletionPosition: Double? = null,
     var staminaDepletionTime: Double? = null,
+    var staminaDepletionSpeed: Double? = null,
     val frames: MutableList<RaceFrame> = mutableListOf(),
 ) {
     val isInTemptation: Boolean
@@ -869,6 +870,9 @@ data class RaceSimulationResult(
     val staminaSurvival: Boolean,
     val staminaDepletionPosition: Double?,
     val staminaDepletionTime: Double?,
+    val staminaDepletionSpeed: Double?,
+    val staminaDepletionSpeedLoss: Double?,
+    val staminaDepletionTimeLoss: Double?,
 )
 
 class InvokedSkill(

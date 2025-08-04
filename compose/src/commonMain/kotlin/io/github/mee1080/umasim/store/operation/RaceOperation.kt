@@ -101,6 +101,9 @@ private fun toSummary(result: List<RaceSimulationResult>, courseLength: Int): Si
             }
         }
         
+        val staminaDepletionSpeedLosses = staminaDepletionResults.mapNotNull { it.staminaDepletionSpeedLoss }
+        val staminaDepletionTimeLosses = staminaDepletionResults.mapNotNull { it.staminaDepletionTimeLoss }
+        
         SimulationSummaryEntry(
             count = result.size,
             averageTime = result.averageOf { it.raceTime },
@@ -119,6 +122,12 @@ private fun toSummary(result: List<RaceSimulationResult>, courseLength: Int): Si
             averageStaminaDepletionDistanceFromEnd = if (staminaDepletionDistancesFromEnd.isNotEmpty()) staminaDepletionDistancesFromEnd.average() else 0.0,
             longestStaminaDepletionDistanceFromEnd = staminaDepletionDistancesFromEnd.maxOrNull() ?: 0.0,
             shortestStaminaDepletionDistanceFromEnd = staminaDepletionDistancesFromEnd.minOrNull() ?: 0.0,
+            averageStaminaDepletionSpeedLoss = if (staminaDepletionSpeedLosses.isNotEmpty()) staminaDepletionSpeedLosses.average() else 0.0,
+            maxStaminaDepletionSpeedLoss = staminaDepletionSpeedLosses.maxOrNull() ?: 0.0,
+            minStaminaDepletionSpeedLoss = staminaDepletionSpeedLosses.minOrNull() ?: 0.0,
+            averageStaminaDepletionTimeLoss = if (staminaDepletionTimeLosses.isNotEmpty()) staminaDepletionTimeLosses.average() else 0.0,
+            maxStaminaDepletionTimeLoss = staminaDepletionTimeLosses.maxOrNull() ?: 0.0,
+            minStaminaDepletionTimeLoss = staminaDepletionTimeLosses.minOrNull() ?: 0.0,
         )
     }
 }

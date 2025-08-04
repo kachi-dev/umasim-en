@@ -93,6 +93,12 @@ private val staminaSurvivalTableHeader = listOf(
     "平均スタミナ切れ距離(ゴール前)",
     "最長スタミナ切れ距離(ゴール前)",
     "最短スタミナ切れ距離(ゴール前)",
+    "平均速度損失",
+    "最大速度損失",
+    "最小速度損失",
+    "平均時間損失",
+    "最大時間損失",
+    "最小時間損失",
 )
 
 @Composable
@@ -151,14 +157,20 @@ private fun toTableData(label: String, entry: SimulationSummaryEntry): List<Stri
 
 private fun toStaminaSurvivalTableData(label: String, entry: SimulationSummaryEntry): List<String> {
     return if (entry.count == 0 || entry.staminaDepletionCount == 0) {
-        listOf(label, "-", "-", "-", "-")
+        listOf(label, "-", "-", "-", "-", "-", "-", "-", "-", "-", "-")
     } else {
         listOf(
             label,
             entry.staminaDepletionCount.toString(),
-            entry.averageStaminaDepletionDistanceFromEnd.roundToString(1),
-            entry.longestStaminaDepletionDistanceFromEnd.roundToString(1),
-            entry.shortestStaminaDepletionDistanceFromEnd.roundToString(1),
+            "${entry.averageStaminaDepletionDistanceFromEnd.roundToString(1)}m",
+            "${entry.longestStaminaDepletionDistanceFromEnd.roundToString(1)}m",
+            "${entry.shortestStaminaDepletionDistanceFromEnd.roundToString(1)}m",
+            "-${entry.averageStaminaDepletionSpeedLoss.roundToString(2)}m/s",
+            "-${entry.maxStaminaDepletionSpeedLoss.roundToString(2)}m/s",
+            "-${entry.minStaminaDepletionSpeedLoss.roundToString(2)}m/s",
+            "-${entry.averageStaminaDepletionTimeLoss.secondToTimeString()}",
+            "-${entry.maxStaminaDepletionTimeLoss.secondToTimeString()}",
+            "-${entry.minStaminaDepletionTimeLoss.secondToTimeString()}",
         )
     }
 }

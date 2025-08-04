@@ -396,6 +396,7 @@ private fun RaceState.move(elapsedTime: Double) {
                 simulation.staminaDepletionFrame = simulation.frameElapsed
                 simulation.staminaDepletionPosition = simulation.position
                 simulation.staminaDepletionTime = simulation.frameElapsed * secondPerFrame
+                simulation.staminaDepletionSpeed = simulation.currentSpeed
             }
         }
 
@@ -506,6 +507,18 @@ private fun RaceState.goal(): RaceSimulationResult {
     val raceTimeDelta = raceTime - setting.trackDetail.finishTimeMax / 1.18
     val competeFightFrame = (simulation.competeFightEnd ?: simulation.frameElapsed) -
             (simulation.competeFightStart ?: simulation.frameElapsed)
+    
+    val staminaDepletionSpeedLoss = simulation.staminaDepletionSpeed?.let { depletionSpeed ->
+        depletionSpeed - simulation.currentSpeed
+    }
+    
+    val staminaDepletionTimeLoss = simulation.staminaDepletionPosition?.let { depletionPosition ->
+        val remainingDistance = setting.courseLength - depletionPosition
+        val estimatedTimeAtDepletionSpeed = remainingDistance / simulation.staminaDepletionSpeed!!
+        val actualTimeAfterDepletion = raceTime - simulation.staminaDepletionTime!!
+        actualTimeAfterDepletion - estimatedTimeAtDepletionSpeed
+    }
+    
     return RaceSimulationResult(
         raceTime = raceTime,
         raceTimeDelta = raceTimeDelta,
@@ -515,10 +528,12 @@ private fun RaceState.goal(): RaceSimulationResult {
         staminaKeepDistance = simulation.staminaKeepDistance,
         competeFightFinished = simulation.competeFightEnd == null && simulation.competeFightStart != null,
         competeFightTime = competeFightFrame * secondPerFrame,
-        // New stamina survival tracking
         staminaSurvival = simulation.staminaDepletionFrame == null,
         staminaDepletionPosition = simulation.staminaDepletionPosition,
         staminaDepletionTime = simulation.staminaDepletionTime,
+        staminaDepletionSpeed = simulation.staminaDepletionSpeed,
+        staminaDepletionSpeedLoss = staminaDepletionSpeedLoss,
+        staminaDepletionTimeLoss = staminaDepletionTimeLoss,
     )
 }
 

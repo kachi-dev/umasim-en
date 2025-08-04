@@ -109,6 +109,12 @@ data class SimulationSummaryEntry(
     val averageStaminaDepletionDistanceFromEnd: Double = 0.0,
     val longestStaminaDepletionDistanceFromEnd: Double = 0.0,
     val shortestStaminaDepletionDistanceFromEnd: Double = 0.0,
+    val averageStaminaDepletionSpeedLoss: Double = 0.0,
+    val maxStaminaDepletionSpeedLoss: Double = 0.0,
+    val minStaminaDepletionSpeedLoss: Double = 0.0,
+    val averageStaminaDepletionTimeLoss: Double = 0.0,
+    val maxStaminaDepletionTimeLoss: Double = 0.0,
+    val minStaminaDepletionTimeLoss: Double = 0.0,
 )
 
 data class SimulationSkillInfo(

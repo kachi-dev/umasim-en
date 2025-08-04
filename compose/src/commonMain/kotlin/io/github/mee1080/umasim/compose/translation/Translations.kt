@@ -437,9 +437,15 @@ object Translations {
         // Stamina survival table
         "スタミナ切れ統計" to "Stamina Depletion Statistics",
         "スタミナ切れ数" to "Stamina Depletion Count",
-        "平均スタミナ切れ距離(ゴール前)" to "Average Distance from Goal",
-        "最長スタミナ切れ距離(ゴール前)" to "Max Distance from Goal",
-        "最短スタミナ切れ距離(ゴール前)" to "Min Distance from Goal",
+        "平均スタミナ切れ距離(ゴール前)" to "Average Distance",
+        "最長スタミナ切れ距離(ゴール前)" to "Max Distance",
+        "最短スタミナ切れ距離(ゴール前)" to "Min Distance",
+        "平均速度損失" to "Average Speed Loss",
+        "最大速度損失" to "Max Speed Loss",
+        "最小速度損失" to "Min Speed Loss",
+        "平均時間損失" to "Average Time Loss",
+        "最大時間損失" to "Max Time Loss",
+        "最小時間損失" to "Min Time Loss",
     )
     
     fun translate(japaneseText: String): String {
