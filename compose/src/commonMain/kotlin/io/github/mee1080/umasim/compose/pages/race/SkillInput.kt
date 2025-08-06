@@ -33,7 +33,7 @@ fun SkillInput(virtual: Boolean, state: AppState, dispatch: OperationDispatcher<
         header = { Text(LanguageManager.getText("スキル")) },
         initialOpen = true,
         headerClosed = {
-            Text("${LanguageManager.getText("スキル")}：${hasSkills.joinToString(", ") { it.name }}")
+            Text("${LanguageManager.getText("スキル")}：${hasSkills.joinToString(", ") { LanguageManager.getTextSync(it.name) }}")
         },
     ) {
         SkillSetting(virtual, state, dispatch)
@@ -257,7 +257,7 @@ private fun TypeSkillSetting(
         headerBackground = MaterialTheme.colorScheme.tertiaryContainer,
         headerClosed = {
             val hasSkills = skills.values.flatten().filter { skillIdSet.contains(it.id) }
-            Text("$title：${hasSkills.joinToString(", ") { it.name }}")
+            Text("$title：${hasSkills.joinToString(", ") { LanguageManager.getTextSync(it.name) }}")
         }
     ) {
         Column(
