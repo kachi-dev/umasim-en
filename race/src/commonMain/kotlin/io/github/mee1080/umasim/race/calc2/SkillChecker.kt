@@ -568,7 +568,8 @@ fun RaceState.doHeal(value: Double): Pair<Double, Double> {
         simulation.healTriggerCount++
     }
     if (this.currentPhase >= 2 && value > 0) {
-        simulation.spurtParameters = calcSpurtParameter()
+        // Spurt parameter recalculation does not occur until a later update in Global
+        // simulation.spurtParameters = calcSpurtParameter()
     }
     if (simulation.staminaKeep) {
         applyPositionCompetition()
