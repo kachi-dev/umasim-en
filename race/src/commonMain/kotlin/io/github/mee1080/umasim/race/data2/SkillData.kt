@@ -17,7 +17,10 @@ private val jsonParser = Json { allowTrailingComma = true }
 suspend fun loadSkillData() {
     val skillDataString =
         fetchFromUrl("https://raw.githubusercontent.com/mee1080/umasim/refs/heads/main/data/skill_data.txt")
-    skillData2 = jsonParser.decodeFromString<List<SkillData>>(skillDataString)
+
+    val mainSkills = jsonParser.decodeFromString<List<SkillData>>(skillDataString)
+        
+    skillData2 = mainSkills + EnemyDebuffSkills.skills
 }
 
 lateinit var skillData2: List<SkillData>

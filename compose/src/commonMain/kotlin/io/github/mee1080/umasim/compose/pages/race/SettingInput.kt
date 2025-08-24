@@ -70,5 +70,16 @@ private fun OtherSetting(state: AppState, dispatch: OperationDispatcher<AppState
                 modifier = Modifier.fillMaxWidth(),
             )
         }
+        Column {
+            val intValue = (state.systemSetting.enemyDebuffActivationRate * 100).toInt()
+            Text("${LanguageManager.getText("敵デバフスキル発動率")}： $intValue %")
+            Slider(
+                value = intValue.toFloat(),
+                onValueChange = { dispatch(setEnemyDebuffActivationRate(it / 100.0)) },
+                valueRange = 0f..100f,
+                steps = 100,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
     }
 }

@@ -100,6 +100,10 @@ private fun SkillSetting(virtual: Boolean, state: AppState, dispatch: OperationD
             if (gateSkills != null) {
                 TypeSkillSetting(virtual, LanguageManager.getText("その他"), gateSkills, skillIdSet, setting, dispatch)
             }
+            val debuffSkills = groupedSkills["debuff"]
+            if (debuffSkills != null) {
+                TypeSkillSetting(virtual, LanguageManager.getText("デバフスキル"), debuffSkills, skillIdSet, setting, dispatch)
+            }
         }
     }
 }

@@ -3,6 +3,7 @@
 settings.conf
 /.kotlin
 /skills-translate/
+/accel-research/
 
 .gradle
 .idea

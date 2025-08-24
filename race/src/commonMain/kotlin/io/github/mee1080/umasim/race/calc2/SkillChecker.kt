@@ -567,7 +567,7 @@ fun RaceState.doHeal(value: Double): Pair<Double, Double> {
     if (value > 0) {
         simulation.healTriggerCount++
     }
-    if (this.currentPhase >= 2) {
+    if (this.currentPhase >= 2 && value > 0) {
         simulation.spurtParameters = calcSpurtParameter()
     }
     if (simulation.staminaKeep) {

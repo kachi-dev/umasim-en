@@ -79,3 +79,16 @@ inline fun <K, V> diffMap(first: Map<K, V>, second: Map<K, V>, defaultValue: V, 
 fun <T> List<T>.averageOf(
     selector: (T) -> Double,
 ) = map(selector).average()
+
+fun <T> List<T>.medianOf(
+    selector: (T) -> Double,
+): Double {
+    val values = map(selector).sorted()
+    return if (values.isEmpty()) {
+        0.0
+    } else if (values.size % 2 == 0) {
+        (values[values.size / 2 - 1] + values[values.size / 2]) / 2.0
+    } else {
+        values[values.size / 2]
+    }
+}

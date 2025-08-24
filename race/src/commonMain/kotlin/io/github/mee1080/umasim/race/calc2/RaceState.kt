@@ -772,7 +772,6 @@ class RaceSimulationState(
     var positionKeepNextFrame: Int = framePerSecond * 2,
     var positionKeepExitPosition: Double = 0.0,
     var positionKeepExitDistance: Double = 0.0,
-    // New fields for stamina depletion tracking
     var staminaDepletionFrame: Int? = null,
     var staminaDepletionPosition: Double? = null,
     var staminaDepletionTime: Double? = null,
@@ -866,13 +865,14 @@ data class RaceSimulationResult(
     val staminaKeepDistance: Double,
     val competeFightFinished: Boolean,
     val competeFightTime: Double,
-    // New fields for stamina survival tracking
     val staminaSurvival: Boolean,
     val staminaDepletionPosition: Double?,
     val staminaDepletionTime: Double?,
     val staminaDepletionSpeed: Double?,
     val staminaDepletionSpeedLoss: Double?,
     val staminaDepletionTimeLoss: Double?,
+    val spurtSpeed: Double,
+    val spurtDistance: Double,
 )
 
 class InvokedSkill(
@@ -892,6 +892,7 @@ class InvokedSkill(
 @Serializable
 data class SystemSetting(
     val skillLaneChangeRate: Double = 0.4,
+    val enemyDebuffActivationRate: Double = 0.9,
 ) {
     @Transient
     val positionKeepSectionSen: List<Boolean> = List(10) { it == 0 }

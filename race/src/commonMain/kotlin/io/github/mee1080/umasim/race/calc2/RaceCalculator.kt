@@ -39,7 +39,7 @@ class RaceCalculator(
     }
 
     private fun RaceSetting.initializeState(): RaceState {
-        val invokedSkills = invokeSkills()
+        val invokedSkills = invokeSkills(system)
         val gateCount = track.gateCount
         val gateNumber = when (umaStatus.gateNumber) {
             0 -> Random.nextInt(1..gateCount)
@@ -88,18 +88,25 @@ class RaceCalculator(
 
 }
 
-private fun RaceSetting.invokeSkills(): List<InvokedSkill> {
-    val invokeRate = if (skillActivateAdjustment != SkillActivateAdjustment.NONE) 100.0 else skillActivateRate
-    return buildList {
+    private fun RaceSetting.invokeSkills(system: SystemSetting): List<InvokedSkill> {
+        val invokeRate = if (skillActivateAdjustment != SkillActivateAdjustment.NONE) 100.0 else skillActivateRate
+        val skills = mutableListOf<InvokedSkill>()
+        
         umaStatus.hasSkills.map {
             if (it.rarity == "unique") {
                 it.applyLevel(umaStatus.uniqueLevel)
             } else it
         }.forEach { skill ->
             val calculatedAreas = mutableMapOf<String, List<RandomEntry>>()
-            if (skill.activateLot == 0 || Random.nextDouble() * 100 < invokeRate) {
+            // Use enemy debuff activation rate for debuff skills, otherwise use normal skill activation rate
+            val skillInvokeRate = if (skill.type == "debuff") {
+                system.enemyDebuffActivationRate * 100
+            } else {
+                invokeRate
+            }
+            if (skill.activateLot == 0 || Random.nextDouble() * 100 < skillInvokeRate) {
                 skill.invokes.forEach { invoke ->
-                    add(
+                    skills.add(
                         InvokedSkill(
                             skill,
                             invoke,
@@ -110,8 +117,9 @@ private fun RaceSetting.invokeSkills(): List<InvokedSkill> {
                 }
             }
         }
+        
+        return skills
     }
-}
 
 private fun RaceSetting.applyPassive(system: SystemSetting, simulation: RaceSimulationState): RaceSettingWithPassive {
     var passiveBonus = PassiveBonus()
@@ -518,7 +526,14 @@ private fun RaceState.goal(): RaceSimulationResult {
         val actualTimeAfterDepletion = raceTime - simulation.staminaDepletionTime!!
         actualTimeAfterDepletion - estimatedTimeAtDepletionSpeed
     }
-    
+
+    var spurtSpeed = simulation.spurtParameters?.speed ?: 0.0
+    var spurtDistance = simulation.spurtParameters?.distance ?: 0.0
+
+    if (spurtDistance <= 0.0) {
+        spurtDistance = 0.0
+    }
+
     return RaceSimulationResult(
         raceTime = raceTime,
         raceTimeDelta = raceTimeDelta,
@@ -534,6 +549,8 @@ private fun RaceState.goal(): RaceSimulationResult {
         staminaDepletionSpeed = simulation.staminaDepletionSpeed,
         staminaDepletionSpeedLoss = staminaDepletionSpeedLoss,
         staminaDepletionTimeLoss = staminaDepletionTimeLoss,
+        spurtSpeed = spurtSpeed,
+        spurtDistance = spurtDistance,
     )
 }
 
@@ -797,3 +814,4 @@ fun RaceState.applyPositionKeep() {
         }
     }
 }
+

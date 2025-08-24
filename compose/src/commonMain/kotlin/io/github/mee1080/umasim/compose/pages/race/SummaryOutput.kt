@@ -44,14 +44,15 @@ private val tableHeader = listOf(
     "平均タイム",
     "最速タイム",
     "最遅タイム",
+    "中央値最大速度",
+    "最大最大速度",
+    "最小最大速度",
+    "中央値スパート距離",
+    "最大スパート距離",
+    "最小スパート距離",
     "平均余剰耐力",
     "最大余剰耐力",
     "最小余剰耐力",
-    "位置取り調整回数",
-    "持久力温存発生率",
-    "持久力温存平均距離",
-    "追い比べ完走率",
-    "追い比べ平均時間",
 )
 
 @Composable
@@ -90,13 +91,14 @@ private fun SummaryTable(summary: SimulationSummary) {
 private val staminaSurvivalTableHeader = listOf(
     "",
     "スタミナ切れ数",
-    "平均スタミナ切れ距離(ゴール前)",
+    "割合",
+    "中央値スタミナ切れ距離(ゴール前)",
     "最長スタミナ切れ距離(ゴール前)",
     "最短スタミナ切れ距離(ゴール前)",
-    "平均速度損失",
+    "中央値速度損失",
     "最大速度損失",
     "最小速度損失",
-    "平均時間損失",
+    "中央値時間損失",
     "最大時間損失",
     "最小時間損失",
 )
@@ -108,9 +110,9 @@ private fun StaminaSurvivalTable(summary: SimulationSummary) {
         val translatedHeader = staminaSurvivalTableHeader.map { LanguageManager.getText(it) }
         val tableData = buildList {
             add(translatedHeader)
-            add(toStaminaSurvivalTableData(LanguageManager.getText("全体"), summary.allSummary))
-            add(toStaminaSurvivalTableData(LanguageManager.getText("最大スパート"), summary.spurtSummary))
-            add(toStaminaSurvivalTableData(LanguageManager.getText("非最大スパート"), summary.notSpurtSummary))
+            add(toStaminaSurvivalTableData(LanguageManager.getText("全体"), summary.allSummary, summary.allSummary.count))
+            add(toStaminaSurvivalTableData(LanguageManager.getText("最大スパート"), summary.spurtSummary, summary.allSummary.count))
+            add(toStaminaSurvivalTableData(LanguageManager.getText("非最大スパート"), summary.notSpurtSummary, summary.allSummary.count))
         }
         LinedTable(
             rowCount = 4, columnCount = staminaSurvivalTableHeader.size,
@@ -136,35 +138,38 @@ private fun StaminaSurvivalTable(summary: SimulationSummary) {
 
 private fun toTableData(label: String, entry: SimulationSummaryEntry): List<String> {
     return if (entry.count == 0) {
-        listOf(label, "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-")
+        listOf(label, "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-")
     } else {
         listOf(
             label,
             entry.averageTime.secondToTimeString(),
             entry.bestTime.secondToTimeString(),
             entry.worstTime.secondToTimeString(),
+            "${entry.averageMaxVelocity.roundToString(2)}m/s",
+            "${entry.maxMaxVelocity.roundToString(2)}m/s",
+            "${entry.minMaxVelocity.roundToString(2)}m/s",
+            "${entry.averageSpurtDistance.roundToString(1)}m",
+            "${entry.maxSpurtDistance.roundToString(1)}m",
+            "${entry.minSpurtDistance.roundToString(1)}m",
             entry.averageSp.roundToString(1),
             entry.bestSp.roundToString(1),
-            entry.worstSp.roundToString(1),
-            entry.positionCompetitionCount.roundToString(2),
-            entry.staminaKeepRate.toPercentString(1),
-            entry.staminaKeepDistance.roundToString(1),
-            entry.competeFightFinishRate.toPercentString(1),
-            entry.competeFightTime.roundToString(1),
+            entry.worstSp.roundToString(1)
         )
     }
 }
 
-private fun toStaminaSurvivalTableData(label: String, entry: SimulationSummaryEntry): List<String> {
+private fun toStaminaSurvivalTableData(label: String, entry: SimulationSummaryEntry, totalCount: Int): List<String> {
     return if (entry.count == 0 || entry.staminaDepletionCount == 0) {
-        listOf(label, "-", "-", "-", "-", "-", "-", "-", "-", "-", "-")
+        listOf(label, "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-")
     } else {
+        val percentage = (entry.staminaDepletionCount.toDouble() / totalCount * 100.0).roundToString(1)
         listOf(
             label,
             entry.staminaDepletionCount.toString(),
-            "${entry.averageStaminaDepletionDistanceFromEnd.roundToString(1)}m",
-            "${entry.longestStaminaDepletionDistanceFromEnd.roundToString(1)}m",
-            "${entry.shortestStaminaDepletionDistanceFromEnd.roundToString(1)}m",
+            "${percentage}%",
+            "${entry.averageStaminaDepletionDistance.roundToString(1)}m",
+            "${entry.longestStaminaDepletionDistance.roundToString(1)}m",
+            "${entry.shortestStaminaDepletionDistance.roundToString(1)}m",
             "-${entry.averageStaminaDepletionSpeedLoss.roundToString(2)}m/s",
             "-${entry.maxStaminaDepletionSpeedLoss.roundToString(2)}m/s",
             "-${entry.minStaminaDepletionSpeedLoss.roundToString(2)}m/s",

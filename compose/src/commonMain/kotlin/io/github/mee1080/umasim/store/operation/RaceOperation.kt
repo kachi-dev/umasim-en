@@ -13,6 +13,7 @@ import io.github.mee1080.umasim.store.framework.ActionContext
 import io.github.mee1080.umasim.store.framework.AsyncOperation
 import io.github.mee1080.umasim.store.framework.OnRunning
 import io.github.mee1080.utility.averageOf
+import io.github.mee1080.utility.medianOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -95,7 +96,7 @@ private suspend fun ActionContext<AppState>.runSimulationNormal(state: AppState,
 private fun toSummary(result: List<RaceSimulationResult>, courseLength: Int): SimulationSummaryEntry {
     return if (result.isEmpty()) SimulationSummaryEntry() else {
         val staminaDepletionResults = result.filter { !it.staminaSurvival }
-        val staminaDepletionDistancesFromEnd = staminaDepletionResults.mapNotNull { result ->
+        val staminaDepletionDistances = staminaDepletionResults.mapNotNull { result ->
             result.staminaDepletionPosition?.let { position ->
                 courseLength.toDouble() - position
             }
@@ -103,6 +104,13 @@ private fun toSummary(result: List<RaceSimulationResult>, courseLength: Int): Si
         
         val staminaDepletionSpeedLosses = staminaDepletionResults.mapNotNull { it.staminaDepletionSpeedLoss }
         val staminaDepletionTimeLosses = staminaDepletionResults.mapNotNull { it.staminaDepletionTimeLoss }
+        val spurtResults = result.filter { it.spurtSpeed > 0.0 }
+        val medianMaxVelocity = if (spurtResults.isNotEmpty()) spurtResults.medianOf { it.spurtSpeed } else 0.0
+        val maxMaxVelocity = if (spurtResults.isNotEmpty()) spurtResults.maxOf { it.spurtSpeed } else 0.0
+        val minMaxVelocity = if (spurtResults.isNotEmpty()) spurtResults.minOf { it.spurtSpeed } else 0.0
+        val medianSpurtDistance = if (spurtResults.isNotEmpty()) spurtResults.medianOf { it.spurtDistance } else 0.0
+        val maxSpurtDistance = if (spurtResults.isNotEmpty()) spurtResults.maxOf { it.spurtDistance } else 0.0
+        val minSpurtDistance = if (spurtResults.isNotEmpty()) spurtResults.minOf { it.spurtDistance } else 0.0
         
         SimulationSummaryEntry(
             count = result.size,
@@ -118,16 +126,22 @@ private fun toSummary(result: List<RaceSimulationResult>, courseLength: Int): Si
             competeFightFinishRate = result.count { it.competeFightFinished } /
                     result.count { it.competeFightTime > 0.0 }.toDouble(),
             competeFightTime = result.averageOf { it.competeFightTime },
-            staminaDepletionCount = staminaDepletionDistancesFromEnd.size,
-            averageStaminaDepletionDistanceFromEnd = if (staminaDepletionDistancesFromEnd.isNotEmpty()) staminaDepletionDistancesFromEnd.average() else 0.0,
-            longestStaminaDepletionDistanceFromEnd = staminaDepletionDistancesFromEnd.maxOrNull() ?: 0.0,
-            shortestStaminaDepletionDistanceFromEnd = staminaDepletionDistancesFromEnd.minOrNull() ?: 0.0,
-            averageStaminaDepletionSpeedLoss = if (staminaDepletionSpeedLosses.isNotEmpty()) staminaDepletionSpeedLosses.average() else 0.0,
+            averageMaxVelocity = medianMaxVelocity,
+            averageSpurtDistance = medianSpurtDistance,
+            staminaDepletionCount = staminaDepletionResults.size,
+            averageStaminaDepletionDistance = if (staminaDepletionDistances.isNotEmpty()) staminaDepletionDistances.medianOf { it } else 0.0,
+            longestStaminaDepletionDistance = staminaDepletionDistances.maxOrNull() ?: 0.0,
+            shortestStaminaDepletionDistance = staminaDepletionDistances.minOrNull() ?: 0.0,
+            averageStaminaDepletionSpeedLoss = if (staminaDepletionSpeedLosses.isNotEmpty()) staminaDepletionSpeedLosses.medianOf { it } else 0.0,
             maxStaminaDepletionSpeedLoss = staminaDepletionSpeedLosses.maxOrNull() ?: 0.0,
             minStaminaDepletionSpeedLoss = staminaDepletionSpeedLosses.minOrNull() ?: 0.0,
-            averageStaminaDepletionTimeLoss = if (staminaDepletionTimeLosses.isNotEmpty()) staminaDepletionTimeLosses.average() else 0.0,
+            averageStaminaDepletionTimeLoss = if (staminaDepletionTimeLosses.isNotEmpty()) staminaDepletionTimeLosses.medianOf { it } else 0.0,
             maxStaminaDepletionTimeLoss = staminaDepletionTimeLosses.maxOrNull() ?: 0.0,
             minStaminaDepletionTimeLoss = staminaDepletionTimeLosses.minOrNull() ?: 0.0,
+            maxMaxVelocity = maxMaxVelocity,
+            minMaxVelocity = minMaxVelocity,
+            maxSpurtDistance = maxSpurtDistance,
+            minSpurtDistance = minSpurtDistance,
         )
     }
 }
