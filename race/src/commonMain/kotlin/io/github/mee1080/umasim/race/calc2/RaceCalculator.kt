@@ -275,7 +275,8 @@ private fun RaceState.updateFrame(): Boolean {
     }
     */
 
-    if (currentSection in 11..15) {
+    // Disabled for Global
+    /* if (currentSection in 11..15) {
         // 位置取り調整/持久力温存
         if (simulation.frameElapsed >= simulation.positionCompetitionNextFrame) {
             if (simulation.positionCompetition) {
@@ -312,7 +313,7 @@ private fun RaceState.updateFrame(): Boolean {
             simulation.staminaKeep = false
         }
         simulation.secureLead = false
-    }
+    }*/
 
     // スタミナ勝負
     if (setting.courseLength > 2100 && !simulation.staminaLimitBreak) {
