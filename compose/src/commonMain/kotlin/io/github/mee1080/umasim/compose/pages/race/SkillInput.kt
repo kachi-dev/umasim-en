@@ -69,7 +69,7 @@ private fun SkillSetting(virtual: Boolean, state: AppState, dispatch: OperationD
             }
         }
         if (filter.isNotEmpty()) {
-            val skills = notUniqueSkills.filter { it.name.contains(filter) }
+            val skills = notUniqueSkills.filter { LanguageManager.getTextSync(it.name).contains(filter, ignoreCase = true) }
             SkillFlowRow(virtual, "", skills, skillIdSet, dispatch)
         } else if (!state.skillCategoryView) {
             val skills = notUniqueSkills.filterBySetting(virtual, setting, skillIdSet)

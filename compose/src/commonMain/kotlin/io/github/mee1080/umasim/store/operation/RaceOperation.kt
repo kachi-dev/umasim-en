@@ -310,9 +310,12 @@ private fun toGraphData(setting: RaceSetting, frameList: List<RaceFrame>?): Grap
                 add(frameList, index, raceFrame, "持久力温存") { it.staminaKeep }
 //                add(index, raceFrame, last, "リード確保") { it.secureLead }
                 add(frameList, index, raceFrame, "スタミナ勝負") { it.staminaLimitBreak }
-//                if (raceFrame.positionKeepState != PositionKeepState.NONE && raceFrame.positionKeepState != last.positionKeepState) {
-//                    add(index / 15f to raceFrame.positionKeepState.label)
-//                }
+                // Position keep modes
+                add(frameList, index, raceFrame, "スピードアップ") { it.positionKeepState == PositionKeepState.SPEED_UP }
+                add(frameList, index, raceFrame, "追い越し") { it.positionKeepState == PositionKeepState.OVERTAKE }
+                add(frameList, index, raceFrame, "ペースアップ") { it.positionKeepState == PositionKeepState.PACE_UP }
+                add(frameList, index, raceFrame, "ペースダウン") { it.positionKeepState == PositionKeepState.PACE_DOWN }
+                add(frameList, index, raceFrame, "ペースアップEx") { it.positionKeepState == PositionKeepState.PACE_UP_EX }
             }
         }.sortedBy { it.start },
         paceMakerData = frameList.mapIndexedNotNull { index, raceFrame ->

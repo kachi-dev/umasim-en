@@ -79,7 +79,7 @@ fun ApproximateSetting(state: AppState, dispatch: OperationDispatcher<AppState>)
                             Text(LanguageManager.getText("以下のキャラとの差で判定します"))
                             Text(LanguageManager.getText("ただし、逃げ同士の競り合いは未実装です（仮想ペースメーカーは一定確率でスピードアップモードに入ります）"))
                         }
-                        Text(LanguageManager.getText("仮想ペースメーカーのスピードアップモード確率: $positionKeepRate %"))
+                        Text(LanguageManager.getText("仮想ペースメーカーのスピードアップモード確率") + ": $positionKeepRate%")
                         Slider(
                             value = positionKeepRate.toFloat(),
                             onValueChange = { dispatch(setPositionKeepRate(it.toInt())) },
@@ -95,7 +95,7 @@ fun ApproximateSetting(state: AppState, dispatch: OperationDispatcher<AppState>)
 
                 PositionKeepMode.SPEED_UP -> {
                     Text(LanguageManager.getText("一定確率でスピードアップモードに入ります（実際は設定値に加えて賢さ判定もあり）"))
-                    Text(LanguageManager.getText("確率: $positionKeepRate %"))
+                    Text(LanguageManager.getText("確率") + ": $positionKeepRate%")
                     Slider(
                         value = positionKeepRate.toFloat(),
                         onValueChange = { dispatch(setPositionKeepRate(it.toInt())) },
