@@ -556,8 +556,8 @@ class RaceSettingWithPassive(
                 1.05 +
                 sqrt(500.0 * modifiedSpeed) *
                 distanceFitSpeedCoef[umaStatus.distanceFit]!! *
-                0.002 +
-                (450.0 * modifiedGuts).pow(0.597) * 0.0001
+                0.002 /* disabled in for Global +
+                (450.0 * modifiedGuts).pow(0.597) * 0.0001*/
     }
 
     val v0: Double by lazy { 0.85 * this.baseSpeed }
