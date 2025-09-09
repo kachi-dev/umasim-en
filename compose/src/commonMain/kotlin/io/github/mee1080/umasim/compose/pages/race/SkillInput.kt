@@ -176,8 +176,60 @@ private fun SkillChip(virtual: Boolean, skill: SkillData, selected: Boolean, dis
     }
 }
 
+// Auto-generated character mapping from umas.json
+private val charaIdToDisplayName = mapOf(
+    "100011" to "[Special Dreamer] Special Week",
+    "100021" to "[Innocent Silence] Silence Suzuka",
+    "100031" to "[Peak Joy] Tokai Teio",
+    "100041" to "[Formula R] Maruzensky",
+    "100061" to "[Starlight Beat] Oguri Cap",
+    "100071" to "[Red Strife] Gold Ship",
+    "100081" to "[Wild Top Gear] Vodka",
+    "100091" to "[Peak Blue] Daiwa Scarlet",
+    "100101" to "[Wild Frontier] Taiki Shuttle",
+    "100111" to "[Stone-Piercing Blue] Grass Wonder",
+    "100131" to "[Frontline Elegance] Mejiro McQueen",
+    "100141" to "[El☆Número 1] El Condor Pasa",
+    "100151" to "[O Sole Suo!] T.M. Opera O",
+    "100161" to "[Maverick] Narita Brian",
+    "100171" to "[Emperor's Path] Symboli Rudolf",
+    "100181" to "[Empress Road] Air Groove",
+    "100201" to "[Reeling in the Big One] Seiun Sky",
+    "100231" to "[pf. Winning Equation...] Biwa Hayahide",
+    "100241" to "[Scramble☆Zone] Mayano Top Gun",
+    "100261" to "[MB-19890425] Mihono Bourbon",
+    "100271" to "[Down the Line] Mejiro Ryan",
+    "100301" to "[Rosy Dreams] Rice Shower",
+    "100321" to "[tach-nology] Agnes Tachyon",
+    "100351" to "[Get to Winning!] Winning Ticket",
+    "100381" to "[Fille Éclair] Curren Chan",
+    "100411" to "[Blossom in Learning] Sakura Bakushin O",
+    "100451" to "[Murmuring Stream] Super Creek",
+    "100461" to "[LOVE☆4EVER] Smart Falcon",
+    "100501" to "[Nevertheless] Narita Taishin",
+    "100521" to "[Bestest Prize ♪] Haru Urara",
+    "100561" to "[Rising☆Fortune] Matikanefukukitaru",
+    "100601" to "[Poinsettia Ribbon] Nice Nature",
+    "100611" to "[King of Emeralds] King Halo",
+    "110031" to "[Beyond the Horizon] Tokai Teio",
+    "110131" to "[End of the Skies] Mejiro McQueen",
+    "110181" to "[Quercus Civilis] Air Groove",
+    "110241" to "[Sunlight Bouquet] Mayano Top Gun",
+)
+
+private val displayNameToHolder = charaIdToDisplayName.entries.associate { (skillId, displayName) ->
+    val skill = skillData2.find { it.id == skillId }
+    displayName to (skill?.holder ?: displayName)
+}
+
 private val charaList =
-    listOf(NOT_SELECTED) + skillData2.mapNotNull { it.holder }.distinct().sortedBy { it.substring(it.indexOf(']')) }
+    listOf(NOT_SELECTED) + skillData2
+        .filter { it.holder != null && it.rarity == "unique" }
+        .mapNotNull { skill ->
+            charaIdToDisplayName[skill.id]
+        }
+        .distinct()
+        .sortedBy { it.substring(it.indexOf(']')) }
 
 private val notUniqueSkills = skillData2
     .filter { it.rarity !in listOf("unique", "evo") }
@@ -214,7 +266,8 @@ private fun UniqueSkillSetting(
                 label = { Text(LanguageManager.getText("キャラ")) },
             )
             if (charaName != NOT_SELECTED) {
-                val uniqueSkill = charaToUniqueSkill[charaName]
+                val originalCharaName = displayNameToHolder[charaName] ?: charaName
+                val uniqueSkill = charaToUniqueSkill[originalCharaName]
                 if (uniqueSkill != null) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -231,7 +284,7 @@ private fun UniqueSkillSetting(
                         )
                     }
                 }
-                val evoSkills = charaToEvoSkills[charaName]
+                val evoSkills = charaToEvoSkills[originalCharaName]
                 if (evoSkills?.isNotEmpty() == true) {
                     FlowRow(
                         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
