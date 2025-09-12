@@ -674,14 +674,14 @@ fun RaceState.applyPositionKeep() {
             val behind = paceMaker.simulation.startPosition - simulation.startPosition
             val myStyle = setting.basicRunningStyle
             // 自身が先頭の場合、逃げ先行は常に、差し追込は中盤以降なら、自身がペースメーカーになる
-            val paceMakerIsSelf = behind <= 0 && (myStyle <= Style.SEN || currentPhase >= 1)
+            val paceMakerIsSelf = false // behind <= 0 && (myStyle <= Style.SEN || currentPhase >= 1) global!
             val paceMakerStyle = paceMaker.setting.basicRunningStyle
             when (simulation.positionKeepState) {
                 PositionKeepState.NONE -> {
                     if (simulation.frameElapsed < simulation.positionKeepNextFrame) return
-                    if (behind > 0 && paceMakerStyle > myStyle) {
+                    /* if (behind > 0 && paceMakerStyle > myStyle) {
                         simulation.positionKeepState = PositionKeepState.PACE_UP_EX
-                    } else if (myStyle == Style.NIGE) {
+                    } else */ if (myStyle == Style.NIGE) {
                         if (behind <= 0) {
                             val threshold = when {
                                 setting.oonige -> -17.5
@@ -707,9 +707,11 @@ fun RaceState.applyPositionKeep() {
                         } else if (!paceMakerIsSelf && behind < setting.positionKeepMinDistance) {
                             if (simulation.operatingSkills.all { it.totalSpeed <= 0 }) {
                                 simulation.positionKeepState = PositionKeepState.PACE_DOWN
-                                val max = if (currentPhase == 1) {
+                                // global
+                                /* val max = if (currentPhase == 1) {
                                     setting.positionKeepMinDistance + 0.5 * (setting.positionKeepMaxDistance - setting.positionKeepMinDistance)
-                                } else setting.positionKeepMaxDistance
+                                } else setting.positionKeepMaxDistance */
+                                val max = setting.positionKeepMaxDistance
                                 simulation.positionKeepExitDistance = Random.nextDouble(
                                     setting.positionKeepMinDistance, max,
                                 )
