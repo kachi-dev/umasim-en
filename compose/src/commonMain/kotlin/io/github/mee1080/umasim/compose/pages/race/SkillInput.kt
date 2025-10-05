@@ -188,6 +188,7 @@ private val charaIdToDisplayName = mapOf(
     "100091" to "[Peak Blue] Daiwa Scarlet",
     "100101" to "[Wild Frontier] Taiki Shuttle",
     "100111" to "[Stone-Piercing Blue] Grass Wonder",
+    "100121" to "[Azure Amazon] Hishi Amazon",
     "100131" to "[Frontline Elegance] Mejiro McQueen",
     "100141" to "[El☆Número 1] El Condor Pasa",
     "100151" to "[O Sole Suo!] T.M. Opera O",
@@ -212,7 +213,9 @@ private val charaIdToDisplayName = mapOf(
     "100601" to "[Poinsettia Ribbon] Nice Nature",
     "100611" to "[King of Emeralds] King Halo",
     "110031" to "[Beyond the Horizon] Tokai Teio",
+    "110111" to "[Saintly Jade Cleric] Grass Wonder",
     "110131" to "[End of the Skies] Mejiro McQueen",
+    "110141" to "[Kukulkan Warrior] El Condor Pasa",
     "110181" to "[Quercus Civilis] Air Groove",
     "110241" to "[Sunlight Bouquet] Mayano Top Gun",
 )

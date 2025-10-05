@@ -14,13 +14,163 @@ import kotlin.random.Random
 @OptIn(ExperimentalSerializationApi::class)
 private val jsonParser = Json { allowTrailingComma = true }
 
+@Serializable
+data class GlobalSkillData(
+    val alternatives: List<GlobalSkillAlternative>,
+    val rarity: Int
+)
+
+@Serializable
+data class GlobalSkillAlternative(
+    val baseDuration: Int,
+    val condition: String,
+    val effects: List<GlobalSkillEffect>,
+    val precondition: String
+)
+
+@Serializable
+data class GlobalSkillEffect(
+    val modifier: Int,
+    val target: Int,
+    val type: Int
+)
+
 suspend fun loadSkillData() {
     val skillDataString =
         fetchFromUrl("https://raw.githubusercontent.com/kachi-dev/umasim-en/refs/heads/main/data/skill_data.txt")
 
+    val globalSkillDataString =
+        fetchFromUrl("https://raw.githubusercontent.com/kachi-dev/umasim-en/refs/heads/main/data/global_skill_data.json")
+
     val mainSkills = jsonParser.decodeFromString<List<SkillData>>(skillDataString)
+    val globalSkillData = jsonParser.decodeFromString<Map<String, GlobalSkillData>>(globalSkillDataString)
+    
+    // Filter and update skills based on global_skill_data.json
+    val updatedSkills = mainSkills.filter { skill ->
+        globalSkillData.containsKey(skill.id)
+    }.map { skill ->
+        val globalData = globalSkillData[skill.id]!!
+        skill.copy(
+            invokes = globalData.alternatives.mapIndexed { index, alternative ->
+                val originalInvoke = skill.invokes.getOrNull(index)
+                Invoke(
+                    skillId = skill.id,
+                    index = index + 1,
+                    conditions = parseConditionString(alternative.condition),
+                    preConditions = if (alternative.precondition.isNotEmpty()) parseConditionString(alternative.precondition) else emptyList(),
+                    effects = alternative.effects.map { effect ->
+                        SkillEffect(
+                            type = mapEffectType(effect.type),
+                            value = effect.modifier,
+                            special = 1,
+                            additional = 0
+                        )
+                    },
+                    cd = 0.0,
+                    duration = if (alternative.baseDuration > 0) alternative.baseDuration / 10000.0 else 0.0,
+                    durationSpecial = 1
+                )
+            },
+            info = generateSkillInfo(globalData.alternatives),
+            description = emptyList()
+        )
+    }
         
-    skillData2 = mainSkills + EnemyDebuffSkills.skills
+    skillData2 = updatedSkills + EnemyDebuffSkills.skills
+}
+
+private fun parseConditionString(conditionString: String): List<List<SkillCondition>> {
+    if (conditionString.isEmpty()) return emptyList()
+    
+    // Split by @ for OR conditions, then by & for AND conditions
+    return conditionString.split("@").map { orCondition ->
+        orCondition.split("&").map { andCondition ->
+            parseSingleCondition(andCondition.trim())
+        }
+    }
+}
+
+private fun parseSingleCondition(condition: String): SkillCondition {
+    val operators = listOf(">=", "<=", "==", "!=", ">", "<")
+    
+    for (op in operators) {
+        if (condition.contains(op)) {
+            val parts = condition.split(op)
+            if (parts.size == 2) {
+                return SkillCondition(
+                    type = parts[0].trim(),
+                    operator = op,
+                    value = parts[1].trim().toInt()
+                )
+            }
+        }
+    }
+    
+    throw IllegalArgumentException("Invalid condition format: $condition")
+}
+
+private fun mapEffectType(type: Int): String {
+    return when (type) {
+        1 -> "passiveSpeed"      // SpeedUp
+        2 -> "passiveStamina"    // StaminaUp
+        3 -> "passivePower"      // PowerUp
+        4 -> "passiveGuts"       // GutsUp
+        5 -> "passiveWisdom"     // WisdomUp
+        9 -> "heal"              // Recovery
+        10 -> "startDelay"       // MultiplyStartDelay
+        14 -> "startDelay"       // SetStartDelay
+        21 -> "currentSpeed"     // CurrentSpeed
+        22 -> "speedWithDecel"   // CurrentSpeedWithNaturalDeceleration
+        27 -> "targetSpeed"      // TargetSpeed
+        31 -> "acceleration"     // Accel
+        37 -> "rareSkill"        // ActivateRandomGold
+        42 -> "evoDurationUp"    // ExtendEvolvedDuration
+        else -> "targetSpeed"    // Default fallback
+    }
+}
+
+private fun generateSkillInfo(alternatives: List<GlobalSkillAlternative>): List<String> {
+    val infoLines = mutableListOf<String>()
+    
+    alternatives.forEachIndexed { index, alternative ->
+        if (alternatives.size > 1) {
+            infoLines.add("Alternative ${index + 1}:")
+        }
+        
+        // Add preconditions if they exist
+        if (alternative.precondition.isNotEmpty()) {
+            infoLines.add("Preconditions:")
+            infoLines.add(alternative.precondition)
+        }
+        
+        // Add conditions if they exist
+        if (alternative.condition.isNotEmpty()) {
+            infoLines.add("Conditions:")
+            infoLines.add(alternative.condition)
+        }
+        
+        // Add effects
+        if (alternative.effects.isNotEmpty()) {
+            infoLines.add("Effects:")
+            alternative.effects.forEach { effect ->
+                val effectTypeName = mapEffectType(effect.type)
+                infoLines.add("$effectTypeName ${effect.modifier}")
+            }
+        }
+        
+        // Add duration if it exists and is positive
+        if (alternative.baseDuration > 0) {
+            val durationSeconds = alternative.baseDuration / 10000.0
+            infoLines.add("Duration: ${durationSeconds}s")
+        }
+        
+        // Add separator between alternatives if there are multiple
+        if (index < alternatives.size - 1) {
+            infoLines.add("")
+        }
+    }
+    
+    return infoLines
 }
 
 lateinit var skillData2: List<SkillData>
@@ -379,7 +529,7 @@ data class SkillData(
     }
 
     val notice by lazy {
-        (description + invokes.flatMap { it.messages }).distinct()
+        emptyList<String>()
     }
 }
 
