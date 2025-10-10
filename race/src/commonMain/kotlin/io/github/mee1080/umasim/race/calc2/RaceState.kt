@@ -184,8 +184,8 @@ class RaceState(
                     else -> {
                         setting.baseSpeed * setting.runningStyle.styleSpeedCoef[currentPhase]!! +
                                 sqrt(setting.modifiedSpeed / 500.0) *
-                                distanceFitSpeedCoef[setting.umaStatus.distanceFit]!! +
-                                (setting.modifiedGuts * 450.0).pow(0.597) * 0.0001
+                                distanceFitSpeedCoef[setting.umaStatus.distanceFit]!! /* Disabled in Global
+                                + (setting.modifiedGuts * 450.0).pow(0.597) * 0.0001 */
                     }
                 } + setting.baseSpeed * simulation.sectionTargetSpeedRandoms[currentSection]
             }
@@ -556,7 +556,7 @@ class RaceSettingWithPassive(
                 1.05 +
                 sqrt(500.0 * modifiedSpeed) *
                 distanceFitSpeedCoef[umaStatus.distanceFit]!! *
-                0.002 /* disabled in for Global +
+                0.002 /* disabled in Global +
                 (450.0 * modifiedGuts).pow(0.597) * 0.0001*/
     }
 
