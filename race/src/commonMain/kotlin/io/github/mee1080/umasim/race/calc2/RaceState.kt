@@ -769,7 +769,7 @@ class RaceSimulationState(
     var staminaKeepDistance: Double = 0.0,
 
     var positionKeepState: PositionKeepState = PositionKeepState.NONE,
-    var positionKeepNextFrame: Int = framePerSecond * 2,
+    var positionKeepNextFrame: Int = 0,
     var positionKeepExitPosition: Double = 0.0,
     var positionKeepExitDistance: Double = 0.0,
     var staminaDepletionFrame: Int? = null,
