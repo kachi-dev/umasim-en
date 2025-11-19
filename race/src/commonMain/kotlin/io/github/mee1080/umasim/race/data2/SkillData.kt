@@ -125,6 +125,7 @@ private fun mapEffectType(type: Int): String {
         31 -> "acceleration"     // Accel
         37 -> "rareSkill"        // ActivateRandomGold
         42 -> "evoDurationUp"    // ExtendEvolvedDuration
+        6 -> "oonige"            // Oonige
         else -> "targetSpeed"    // Default fallback
     }
 }

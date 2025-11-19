@@ -703,7 +703,7 @@ object Translations {
         "先行" to "Pace Chaser",
         "差し" to "Late Surger",
         "追込" to "End Closer",
-        "大逃げ" to "Front Runner",
+        "大逃げ" to "Runaway",
         
         // Table headers
         "平均タイム" to "Average Time",
