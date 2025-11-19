@@ -10,8 +10,19 @@ import io.github.mee1080.umasim.compose.common.atoms.TextWithLink
 
 @Composable
 fun Header() {
-    Row {
-        Text("ウマ娘レースエミュレータ移植版", style = MaterialTheme.typography.headlineMedium)
+    Column {
+        Row {
+            Text("ウマ娘レースエミュレータ移植版", style = MaterialTheme.typography.headlineMedium)
+        }
+        TextWithLink(
+            listOf(
+                "Prefer " to null,
+                "https://kachi-dev.github.io/uma-tools/umalator-global/" to "https://kachi-dev.github.io/uma-tools/umalator-global/",
+                " for future work." to null,
+            )
+        )
+        Text("In CM4, we found that vfalator (with wit variance) gave us a more accurate spurt rate than mee1080.")
+        Text("...to be honest, neither simulator is great. But we're working on improving vfalator because it has the prettier UI.")
     }
 }
 

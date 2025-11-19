@@ -259,7 +259,6 @@ private fun RaceState.updateFrame(): Boolean {
     }
 
     // 追い比べ
-    /* Disabled for Global
     if (simulation.competeFight) {
         // HP5%以下で終了
         if (simulation.sp <= 0.05 * setting.spMax) {
@@ -273,7 +272,6 @@ private fun RaceState.updateFrame(): Boolean {
             simulation.competeFightStart = simulation.frameElapsed
         }
     }
-    */
 
     // Disabled for Global
     /* if (currentSection in 11..15) {
@@ -318,7 +316,7 @@ private fun RaceState.updateFrame(): Boolean {
     // スタミナ勝負
     if (setting.courseLength > 2100 && !simulation.staminaLimitBreak) {
         if (simulation.currentSpeed >= setting.maxSpurtSpeed) {
-            simulation.staminaLimitBreak = true
+            // simulation.staminaLimitBreak = true disabled for global
         }
     }
 

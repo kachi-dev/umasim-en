@@ -27,8 +27,10 @@ import io.github.mee1080.utility.fetchFromUrl
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+private val jsonDecoder = Json { ignoreUnknownKeys = true }
+
 val trackData by lazy {
-    Json.decodeFromString<Map<Int, RaceTrack>>(rawCourseData)
+    jsonDecoder.decodeFromString<Map<Int, RaceTrack>>(rawCourseData)
 }
 
 private lateinit var recentEventTrackData: List<Pair<String, Track>>

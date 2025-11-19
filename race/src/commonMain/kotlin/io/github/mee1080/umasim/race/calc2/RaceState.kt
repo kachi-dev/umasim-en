@@ -184,8 +184,8 @@ class RaceState(
                     else -> {
                         setting.baseSpeed * setting.runningStyle.styleSpeedCoef[currentPhase]!! +
                                 sqrt(setting.modifiedSpeed / 500.0) *
-                                distanceFitSpeedCoef[setting.umaStatus.distanceFit]!! /* Disabled in Global
-                                + (setting.modifiedGuts * 450.0).pow(0.597) * 0.0001 */
+                                distanceFitSpeedCoef[setting.umaStatus.distanceFit]!!
+                                + (setting.modifiedGuts * 450.0).pow(0.597) * 0.0001
                     }
                 } + setting.baseSpeed * simulation.sectionTargetSpeedRandoms[currentSection]
             }
@@ -328,7 +328,7 @@ class RaceState(
         spurtPhase: Boolean = currentPhase >= 2,
         applyStatusModifier: Boolean = true,
     ): Double {
-        val baseSpeed: Double = if (simulation.isStartDash) simulation.currentSpeed else setting.baseSpeed
+        val baseSpeed: Double = setting.baseSpeed
         val groundCoef = setting.spConsumptionGroundCoef
         var consume = 20.0 * (currentSpeed - baseSpeed + 12.0).pow(2) / 144.0 * groundCoef
         if (spurtPhase) {
@@ -556,8 +556,8 @@ class RaceSettingWithPassive(
                 1.05 +
                 sqrt(500.0 * modifiedSpeed) *
                 distanceFitSpeedCoef[umaStatus.distanceFit]!! *
-                0.002 /* disabled in Global +
-                (450.0 * modifiedGuts).pow(0.597) * 0.0001*/
+                0.002 +
+                (450.0 * modifiedGuts).pow(0.597) * 0.0001
     }
 
     val v0: Double by lazy { 0.85 * this.baseSpeed }
